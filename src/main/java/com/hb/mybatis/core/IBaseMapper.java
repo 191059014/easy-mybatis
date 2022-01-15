@@ -77,7 +77,7 @@ public interface IBaseMapper<T> {
      * @param ids id集合
      * @return 结果
      */
-    T selectBatchIds(Collection<?> ids);
+    List<T> selectBatchIds(Collection<?> ids);
 
     /**
      * 查询单条数据

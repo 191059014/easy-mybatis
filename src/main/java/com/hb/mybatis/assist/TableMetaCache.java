@@ -45,14 +45,18 @@ public class TableMetaCache {
         String pkColumnName = null;
         for (Field field : allFields) {
             String propertyName = field.getName();
+            String columnName = propertyName;
             DbField dbField = field.getAnnotation(DbField.class);
-            String columnName = dbField.value();
-            tableMeta.setMapping(propertyName, columnName);
-            if (dbField.isPk()) {
-                pkColumnName = columnName;
+            if (dbField != null) {
+                columnName = dbField.value();
+                if (dbField.isPk()) {
+                    pkColumnName = columnName;
+                }
             }
+            tableMeta.setMapping(propertyName, columnName);
         }
         Assert.hasText(pkColumnName, "No Primary Key For Class: " + entityClass.getName());
+        tableMeta.setPkColumnName(pkColumnName);
         CACHE.dbMetas.put(entityClass, tableMeta);
     }
 

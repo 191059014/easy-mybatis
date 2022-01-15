@@ -34,11 +34,10 @@ public interface DmlMapper {
      * 选择性更新
      *
      * @param sqlStatement sql语句
-     * @param cloumns      属性值集合
      * @param params       条件集合
      * @return 更新的条数
      */
-    int updateBySelective(@Param("sqlStatement") String sqlStatement, @Param("columns") Map<String, Object> cloumns, @Param("params") Map<String, Object> params);
+    int updateBySelective(@Param("sqlStatement") String sqlStatement, @Param("params") Map<String, Object> params);
 
 
     /**

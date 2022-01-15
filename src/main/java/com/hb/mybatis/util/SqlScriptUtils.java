@@ -19,16 +19,6 @@ public class SqlScriptUtils implements Constants {
         return String.format(PROPERTY_FORMAT, propertyName);
     }
 
-    /**
-     * 装饰数据库字段
-     *
-     * @param columnName 列名
-     * @return mybatis取值的格式
-     */
-    public static String decorateColumn(String columnName) {
-        return String.format(COLUMN_FORMAT, columnName);
-    }
-
 }
 
     

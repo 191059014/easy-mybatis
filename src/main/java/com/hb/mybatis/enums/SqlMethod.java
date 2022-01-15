@@ -10,7 +10,7 @@ import com.hb.mybatis.assist.ISqlSegment;
 public enum SqlMethod implements ISqlSegment {
 
     INSERT("新增", "insert into %s (%s) values (%s)"),
-    DELETE("删除", "deleteByCondition from %s "),
+    DELETE("删除", "delete from %s "),
     UPDATE("修改", "update %s set %s "),
     SELECT_LIST("查询列表", "select %s from %s "),
     SELECT_COUNT("查询总条数", "select count(1) from %s "),;

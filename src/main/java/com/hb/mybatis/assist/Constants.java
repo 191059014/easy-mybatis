@@ -18,11 +18,6 @@ public interface Constants {
     String PROPERTY_FORMAT = "#{params.%s}";
 
     /**
-     * 获取数据库字段的统一格式
-     */
-    String COLUMN_FORMAT = "#{columns.%s}";
-
-    /**
      * 左括号
      */
     String LEFT_BRACKET = "(";

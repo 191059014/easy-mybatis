@@ -68,10 +68,11 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
                 continue;
             }
             String columnName = TableMetaCache.getColumnName(entityClass, key);
-            columnList.add(SqlScriptUtils.decorateColumn(columnName));
+            columnList.add(columnName);
             propertyList.add(SqlScriptUtils.decorateParameter(key));
         }
-        Assert.isTrue(columnList.isEmpty() || propertyList.isEmpty(), "No Value To Insert");
+        Assert.notEmpty(columnList, "No Column To Insert");
+        Assert.notEmpty(propertyList, "No Value To Insert");
         String columnSql = String.join(Constants.COMMA, columnList);
         String paramSql = String.join(Constants.COMMA, propertyList);
         String tableName = TableMetaCache.getTableName(entityClass);
@@ -133,7 +134,9 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
         String pkColumnName = TableMetaCache.getPkColumnName(entityClass);
         Map<String, Object> propertyMap = ReflectUtils.getPropertyMap(entity);
         String propertyName = TableMetaCache.getPropertyName(entityClass, pkColumnName);
-        return updateByCondition(propertyMap, Where.create().equal(pkColumnName, propertyMap.get(propertyName)));
+        Object idValue = propertyMap.get(propertyName);
+        propertyMap.remove(pkColumnName);
+        return updateByCondition(propertyMap, Where.create().equal(pkColumnName, idValue));
     }
 
     /**
@@ -148,6 +151,8 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
         Assert.notEmpty(propertyMap, "No Value To Update");
         Assert.notNull(where, "Condition Is Null");
         List<String> updateKeys = new ArrayList<>();
+        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> whereParams = where.getWhereParams();
         for (Map.Entry<String, Object> entry : propertyMap.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -155,13 +160,21 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
                 continue;
             }
             String columnName = TableMetaCache.getColumnName(entityClass, key);
-            updateKeys.add(columnName + Constants.EQUAL + SqlScriptUtils.decorateParameter(key));
+            String paramName = columnName;
+            if (whereParams.containsKey(paramName)) {
+                // 当需要更新的值和where条件相同的时候，改变名称
+                paramName = paramName + Constants.UNDERLINE;
+            }
+            updateKeys.add(columnName + Constants.EQUAL + SqlScriptUtils.decorateParameter(paramName));
+            paramMap.put(paramName, value);
         }
         Assert.notEmpty(updateKeys, "No Value To Update");
         String updateKeysSql = String.join(Constants.COMMA, updateKeys);
         String tableName = TableMetaCache.getTableName(entityClass);
-        String sqlStatement = String.format(SqlMethod.UPDATE.getSqlSegment(), tableName, updateKeysSql);
-        return dmlMapper.updateBySelective(sqlStatement, propertyMap, where.getWhereParams());
+        String methodSql = String.format(SqlMethod.UPDATE.getSqlSegment(), tableName, updateKeysSql);
+        String whereSql = where.getWhereSql();
+        paramMap.putAll(whereParams);
+        return dmlMapper.updateBySelective(methodSql + whereSql, paramMap);
     }
 
     /**
@@ -183,9 +196,9 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
      * @return 结果
      */
     @Override
-    public T selectBatchIds(Collection<?> ids) {
+    public List<T> selectBatchIds(Collection<?> ids) {
         String pkColumnName = TableMetaCache.getPkColumnName(entityClass);
-        return selectOne(Where.create().in(pkColumnName, ids));
+        return selectList(Where.create().in(pkColumnName, ids));
     }
 
     /**
@@ -253,8 +266,8 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
     public Long selectCount(Where where) {
         Assert.notNull(where, "Condition Is Null");
         String tableName = TableMetaCache.getTableName(entityClass);
-        String methodSql = String.join(SqlMethod.SELECT_COUNT.getSqlSegment(), tableName);
-        String whereSql = where.getWhereSql();
+        String methodSql = String.format(SqlMethod.SELECT_COUNT.getSqlSegment(), tableName);
+        String whereSql = where.getConditionSql();
         Map<String, Object> whereParams = where.getWhereParams();
         return dmlMapper.selectCount(methodSql + whereSql, whereParams);
     }

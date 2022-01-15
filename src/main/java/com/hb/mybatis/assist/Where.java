@@ -221,10 +221,10 @@ public class Where implements Constants {
         int paramIndex = 1;
         while (iterator.hasNext()) {
             Object value = iterator.next();
-            String param = String.join(UNDERLINE, columnName, String.valueOf(paramIndex));
-            String parameter = SqlScriptUtils.decorateParameter(param);
+            String paramName = String.join(UNDERLINE, columnName, String.valueOf(paramIndex));
+            String parameter = SqlScriptUtils.decorateParameter(paramName);
             paramSqlList.add(parameter);
-            this.params.put(parameter, value);
+            this.params.put(paramName, value);
             paramIndex++;
         }
         String itemSql = String.join(COMMA, paramSqlList);
@@ -327,21 +327,31 @@ public class Where implements Constants {
     }
 
     /**
+     * 获取条件sql
+     *
+     * @return 条件sql
+     */
+    public String getConditionSql() {
+        return this.conditionSql.toString();
+    }
+
+    /**
      * 获取where完整sql
      *
      * @return addSql
      */
     public String getWhereSql() {
-        if (StringUtils.isEmpty(this.orderBySql)) {
-            this.conditionSql.append(this.orderBySql);
+        StringBuilder sb = new StringBuilder();
+        if (!StringUtils.isEmpty(this.orderBySql)) {
+            sb.append(this.orderBySql);
         }
-        if (StringUtils.isEmpty(this.groupBySql)) {
-            this.conditionSql.append(this.groupBySql);
+        if (!StringUtils.isEmpty(this.groupBySql)) {
+            sb.append(this.groupBySql);
         }
-        if (StringUtils.isEmpty(this.limitSql)) {
-            this.conditionSql.append(this.limitSql);
+        if (!StringUtils.isEmpty(this.limitSql)) {
+            sb.append(this.limitSql);
         }
-        return this.conditionSql.toString();
+        return this.conditionSql.toString() + sb.toString();
     }
 
     /**
