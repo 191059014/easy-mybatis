@@ -1,6 +1,7 @@
 package com.hb.mybatis.util;
 
 import com.hb.mybatis.assist.Constants;
+import com.hb.mybatis.enums.SqlKeyword;
 
 /**
  * sql脚本工具类
@@ -17,6 +18,15 @@ public class SqlScriptUtils implements Constants {
      */
     public static String decorateParameter(String propertyName) {
         return String.format(PROPERTY_FORMAT, propertyName);
+    }
+
+    /**
+     * 获取逻辑有效sql
+     *
+     * @return sql
+     */
+    public static String getLogicInvalidSql() {
+        return String.format(SqlKeyword.EQUAL.getSqlSegment(), LOGIC_STATUS_COLUMN, LOGIC_VALID);
     }
 
 }

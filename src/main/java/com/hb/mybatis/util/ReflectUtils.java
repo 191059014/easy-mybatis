@@ -52,10 +52,9 @@ public class ReflectUtils {
      * @return 字段集合
      */
     private static <T> List<Field> getAllFieldsRecursive(Class<T> targetClass) {
-        List<Field> allFields = new ArrayList<>();
         // 自身类的属性
         Field[] selfClassFields = targetClass.getDeclaredFields();
-        allFields.addAll(Arrays.asList(selfClassFields));
+        List<Field> allFields = new ArrayList<>(Arrays.asList(selfClassFields));
         // 递归获取父类的属性
         if (targetClass.getSuperclass() != Object.class) {
             List<Field> parentClassFields = getAllFieldsRecursive(targetClass.getSuperclass());

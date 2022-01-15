@@ -11,11 +11,6 @@ import java.util.Map;
 public class TableMeta {
 
     /**
-     * 实体类
-     */
-    private Class<?> entityClass;
-
-    /**
      * 表名
      */
     private String tableName;
@@ -34,14 +29,6 @@ public class TableMeta {
      * 数据库字段 -> 实体字段映射集合
      */
     private Map<String, String> columnPropertyMap = new HashMap<>(16);
-
-    public Class<?> getEntityClass() {
-        return entityClass;
-    }
-
-    public void setEntityClass(Class<?> entityClass) {
-        this.entityClass = entityClass;
-    }
 
     public String getTableName() {
         return tableName;
@@ -63,16 +50,8 @@ public class TableMeta {
         return propertyColumnMap;
     }
 
-    public void setPropertyColumnMap(Map<String, String> propertyColumnMap) {
-        this.propertyColumnMap = propertyColumnMap;
-    }
-
     public Map<String, String> getColumnPropertyMap() {
         return columnPropertyMap;
-    }
-
-    public void setColumnPropertyMap(Map<String, String> columnPropertyMap) {
-        this.columnPropertyMap = columnPropertyMap;
     }
 
     /**

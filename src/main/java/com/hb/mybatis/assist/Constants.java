@@ -38,8 +38,33 @@ public interface Constants {
     String COMMA = ",";
 
     /**
+     * 星号
+     */
+    String STAR = "*";
+
+    /**
      * 等号
      */
     String EQUAL = "=";
+
+    /**
+     * 逻辑状态字段名
+     */
+    String LOGIC_STATUS_PROPERTY = "isValid";
+
+    /**
+     * 逻辑状态列名
+     */
+    String LOGIC_STATUS_COLUMN = "is_valid";
+
+    /**
+     * 逻辑有效
+     */
+    int LOGIC_VALID = 1;
+
+    /**
+     * 逻辑无效
+     */
+    int LOGIC_INVALID = 0;
 
 }

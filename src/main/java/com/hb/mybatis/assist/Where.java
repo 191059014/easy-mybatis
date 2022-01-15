@@ -332,7 +332,13 @@ public class Where implements Constants {
      * @return 条件sql
      */
     public String getConditionSql() {
-        return this.conditionSql.toString();
+        String conditionSql = this.conditionSql.toString();
+        // 加上逻辑删除有效字段
+        if (conditionSql.length() > SqlKeyword.WHERE.getSqlSegment().length()) {
+            conditionSql += SqlKeyword.AND.getSqlSegment();
+        }
+        conditionSql += SqlScriptUtils.getLogicInvalidSql();
+        return conditionSql;
     }
 
     /**
@@ -341,17 +347,20 @@ public class Where implements Constants {
      * @return addSql
      */
     public String getWhereSql() {
-        StringBuilder sb = new StringBuilder();
+        String fullSql = getConditionSql();
+        // 加上排序sql
         if (!StringUtils.isEmpty(this.orderBySql)) {
-            sb.append(this.orderBySql);
+            fullSql += this.orderBySql;
         }
+        // 加上分组sql
         if (!StringUtils.isEmpty(this.groupBySql)) {
-            sb.append(this.groupBySql);
+            fullSql += this.groupBySql;
         }
+        // 加上分页sql
         if (!StringUtils.isEmpty(this.limitSql)) {
-            sb.append(this.limitSql);
+            fullSql += this.limitSql;
         }
-        return this.conditionSql.toString() + sb.toString();
+        return fullSql;
     }
 
     /**

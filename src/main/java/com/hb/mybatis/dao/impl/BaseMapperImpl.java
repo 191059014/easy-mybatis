@@ -1,9 +1,9 @@
-package com.hb.mybatis.core.impl;
+package com.hb.mybatis.dao.impl;
 
 import com.hb.mybatis.assist.Constants;
 import com.hb.mybatis.assist.TableMetaCache;
 import com.hb.mybatis.assist.Where;
-import com.hb.mybatis.core.IBaseMapper;
+import com.hb.mybatis.dao.IBaseMapper;
 import com.hb.mybatis.enums.SqlMethod;
 import com.hb.mybatis.mapper.DmlMapper;
 import com.hb.mybatis.util.Page;
@@ -123,6 +123,43 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
     }
 
     /**
+     * 通过id逻辑删除
+     *
+     * @param id 主键
+     * @return 影响的行数
+     */
+    @Override
+    public int logicDeleteById(Object id) {
+        String pkColumnName = TableMetaCache.getPkColumnName(entityClass);
+        return logicDeleteByCondition(Where.create().equal(pkColumnName, id));
+    }
+
+    /**
+     * 通过id集合逻辑删除
+     *
+     * @param ids id集合
+     * @return 影响的行数
+     */
+    @Override
+    public int logicDeleteBatchIds(Collection<?> ids) {
+        String pkColumnName = TableMetaCache.getPkColumnName(entityClass);
+        return logicDeleteByCondition(Where.create().in(pkColumnName, ids));
+    }
+
+    /**
+     * 根据条件逻辑删除
+     *
+     * @param where where条件对象
+     * @return 影响的行数
+     */
+    @Override
+    public int logicDeleteByCondition(Where where) {
+        Map<String, Object> propertyMap = new HashMap<>();
+        propertyMap.put(Constants.LOGIC_STATUS_PROPERTY, Constants.LOGIC_INVALID);
+        return updateByCondition(propertyMap, where);
+    }
+
+    /**
      * 通过ID更新
      *
      * @param entity 更新的信息
@@ -221,8 +258,7 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
      */
     @Override
     public List<T> selectList(Where where) {
-        String allColumnNames = TableMetaCache.getAllColumnNames(entityClass);
-        return selectList(allColumnNames, where);
+        return selectList(Constants.STAR, where);
     }
 
     /**
@@ -280,8 +316,7 @@ public class BaseMapperImpl<T> implements IBaseMapper<T>, InitializingBean {
      */
     @Override
     public Page<T> selectPages(Where where) {
-        String allColumnNames = TableMetaCache.getAllColumnNames(entityClass);
-        return selectPages(allColumnNames, where);
+        return selectPages(Constants.STAR, where);
     }
 
     /**

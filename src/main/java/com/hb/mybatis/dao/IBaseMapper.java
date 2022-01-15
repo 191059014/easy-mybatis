@@ -1,4 +1,4 @@
-package com.hb.mybatis.core;
+package com.hb.mybatis.dao;
 
 import com.hb.mybatis.assist.Where;
 import com.hb.mybatis.util.Page;
@@ -45,6 +45,30 @@ public interface IBaseMapper<T> {
      * @return 影响的行数
      */
     int deleteByCondition(Where where);
+
+    /**
+     * 通过id逻辑删除
+     *
+     * @param id 主键
+     * @return 影响的行数
+     */
+    int logicDeleteById(Object id);
+
+    /**
+     * 通过id集合逻辑删除
+     *
+     * @param ids id集合
+     * @return 影响的行数
+     */
+    int logicDeleteBatchIds(Collection<?> ids);
+
+    /**
+     * 根据条件逻辑删除
+     *
+     * @param where where条件对象
+     * @return 影响的行数
+     */
+    int logicDeleteByCondition(Where where);
 
     /**
      * 通过id更新

@@ -34,7 +34,6 @@ public class TableMetaCache {
      */
     public static void put(Class<?> entityClass) {
         TableMeta tableMeta = new TableMeta();
-        tableMeta.setEntityClass(entityClass);
         // 获取表名
         Entity entity = entityClass.getAnnotation(Entity.class);
         Assert.notNull(entity, "Empty Table Name For Class: " + entityClass.getName());
@@ -55,7 +54,7 @@ public class TableMetaCache {
             }
             tableMeta.setMapping(propertyName, columnName);
         }
-        Assert.hasText(pkColumnName, "No Primary Key For Class: " + entityClass.getName());
+        Assert.notNull(pkColumnName, "No Primary Key For Class: " + entityClass.getName());
         tableMeta.setPkColumnName(pkColumnName);
         CACHE.dbMetas.put(entityClass, tableMeta);
     }
@@ -104,17 +103,6 @@ public class TableMetaCache {
     public static String getPropertyName(Class<?> entityClass, String columnName) {
         TableMeta tableMeta = CACHE.dbMetas.get(entityClass);
         return tableMeta.getColumnPropertyMap().get(columnName);
-    }
-
-    /**
-     * 获取所有列
-     *
-     * @param entityClass 实体类
-     * @return 列明，多个用逗号隔开
-     */
-    public static String getAllColumnNames(Class<?> entityClass) {
-        TableMeta tableMeta = CACHE.dbMetas.get(entityClass);
-        return String.join(Constants.COMMA, tableMeta.getColumnPropertyMap().keySet());
     }
 
 }
