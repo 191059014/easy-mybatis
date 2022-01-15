@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hb.mybatis.mapper.DmlMapper">
+
+    <!-- 选择性插入 -->
+    <insert id="insertBySelective">
+        ${sqlStatement}
+    </insert>
+
+    <!-- 选择性删除 -->
+    <delete id="deleteBySelective">
+        ${sqlStatement}
+    </delete>
+
+    <!-- 选择性更新 -->
+    <update id="updateBySelective">
+        ${sqlStatement}
+    </update>
+
+    <!-- 动态条件查询结果集合 -->
+    <select id="selectList" resultType="java.util.Map">
+        ${sqlStatement}
+    </select>
+
+    <!-- 查询总条数 -->
+    <select id="selectCount" resultType="java.lang.Long">
+        ${sqlStatement}
+    </select>
+
+</mapper>
